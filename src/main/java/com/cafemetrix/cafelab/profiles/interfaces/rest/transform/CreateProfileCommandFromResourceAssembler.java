@@ -17,6 +17,7 @@ public class CreateProfileCommandFromResourceAssembler {
         return new CreateProfileCommand(
                 resource.name(),
                 resource.email(),
+                resource.password(),
                 resource.role(),
                 resource.cafeteriaName(),
                 resource.experience(),

@@ -20,6 +20,7 @@ public class ProfilesContextFacadeImpl implements ProfilesContextFacade {
 
     public Long createProfile(String name,
                               String email,
+                              String password,
                               String role,
                               String cafeteriaName,
                               String experience,
@@ -31,6 +32,7 @@ public class ProfilesContextFacadeImpl implements ProfilesContextFacade {
         var createProfileCommand = new CreateProfileCommand(
                 name,
                 email,
+                password,
                 role,
                 cafeteriaName,
                 experience,
