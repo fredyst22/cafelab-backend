@@ -52,12 +52,11 @@ public class Profile extends AuditableAbstractAggregateRoot<Profile> {
     }
 
     /**
-     * Constructor with a CreateProfileCommand
+     * Constructor with a CreateProfileCommand WITHOUT PASSWORD
      */
     public Profile(CreateProfileCommand command) {
         this.name = command.name();
         this.emailAddress = new EmailAddress(command.email());
-        this.password = command.password();
         this.role = command.role();
         this.cafeteriaName = command.cafeteriaName();
         this.experience = command.experience();
@@ -66,6 +65,22 @@ public class Profile extends AuditableAbstractAggregateRoot<Profile> {
         this.isFirstLogin = command.isFirstLogin();
         this.plan = command.plan();
         this.hasPlan = command.hasPlan();
+    }
+
+    /**
+     * Constructor with without password
+     */
+    public Profile(String name, String email, String role, String cafeteriaName, String experience, String profilePicture, String paymentMethod, boolean isFirstLogin, String plan, boolean hasPlan) {
+        this.name = name;
+        this.emailAddress = new EmailAddress(email);
+        this.role = role;
+        this.cafeteriaName = cafeteriaName;
+        this.experience = experience;
+        this.profilePicture = profilePicture;
+        this.paymentMethod = paymentMethod;
+        this.isFirstLogin = isFirstLogin;
+        this.plan = plan;
+        this.hasPlan = hasPlan;
     }
 
     /**

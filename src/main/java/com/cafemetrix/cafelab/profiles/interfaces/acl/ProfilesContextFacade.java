@@ -5,11 +5,10 @@ package com.cafemetrix.cafelab.profiles.interfaces.acl;
  */
 public interface ProfilesContextFacade {
     /**
-     * Create a profile
+     * Create a profile WITHOUT PASSWORD
      *
      * @param name           Name of the profile
      * @param email          Email of the profile
-     * @param password       Password of the profile
      * @param role           Role of the profile (barista or owner)
      * @param cafeteriaName  Name of the cafeteria (if applicable)
      * @param experience     Years of experience of the profile
@@ -20,7 +19,7 @@ public interface ProfilesContextFacade {
      * @param hasPlan        Indicates if the profile has an assigned plan
      * @return The id of the created profile if successful, 0 otherwise
      */
-    Long createProfile(String name, String email, String password, String role, String cafeteriaName, String experience, String profilePicture, String paymentMethod, boolean isFirstLogin, String plan, boolean hasPlan);
+    Long createProfile(String name, String email, String role, String cafeteriaName, String experience, String profilePicture, String paymentMethod, boolean isFirstLogin, String plan, boolean hasPlan);
 
     /**
      * Fetch the profile id by email
