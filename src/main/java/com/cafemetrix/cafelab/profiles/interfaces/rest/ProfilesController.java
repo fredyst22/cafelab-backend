@@ -1,6 +1,7 @@
 package com.cafemetrix.cafelab.profiles.interfaces.rest;
 
 import com.cafemetrix.cafelab.profiles.domain.model.queries.GetAllProfilesQuery;
+import com.cafemetrix.cafelab.profiles.domain.model.queries.GetProfileByEmailQuery;
 import com.cafemetrix.cafelab.profiles.domain.model.queries.GetProfileByIdQuery;
 import com.cafemetrix.cafelab.profiles.domain.services.ProfileCommandService;
 import com.cafemetrix.cafelab.profiles.domain.services.ProfileQueryService;
@@ -9,6 +10,7 @@ import com.cafemetrix.cafelab.profiles.interfaces.rest.resources.ProfileResource
 import com.cafemetrix.cafelab.profiles.interfaces.rest.resources.UpdateProfileResource;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.CreateProfileCommandFromResourceAssembler;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.ProfileResourceFromEntityAssembler;
+import com.cafemetrix.cafelab.profiles.domain.model.valueobjects.EmailAddress;
 
 import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.UpdateProfileCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,6 +80,19 @@ public class ProfilesController {
         if (profile.isEmpty()) return ResponseEntity.notFound().build();
         var profileEntity = profile.get();
         var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profileEntity);
+        return ResponseEntity.ok(profileResource);
+    }
+
+    @GetMapping(params = "email")
+    @Operation(summary = "Get profile by email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile found"),
+            @ApiResponse(responseCode = "404", description = "Profile not found")
+    })
+    public ResponseEntity<ProfileResource> getProfileByEmail(@RequestParam String email) {
+        var profile = profileQueryService.handle(new GetProfileByEmailQuery(new EmailAddress(email)));
+        if (profile.isEmpty()) return ResponseEntity.notFound().build();
+        var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profile.get());
         return ResponseEntity.ok(profileResource);
     }
 
