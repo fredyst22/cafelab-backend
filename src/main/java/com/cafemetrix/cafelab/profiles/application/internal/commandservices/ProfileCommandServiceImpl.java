@@ -3,6 +3,7 @@ package com.cafemetrix.cafelab.profiles.application.internal.commandservices;
 import com.cafemetrix.cafelab.profiles.domain.model.aggregates.Profile;
 import com.cafemetrix.cafelab.profiles.domain.model.commands.CreateProfileCommand;
 import com.cafemetrix.cafelab.profiles.domain.model.events.ProfileCreatedEvent;
+import com.cafemetrix.cafelab.profiles.domain.model.commands.UpdateProfileCommand;
 import com.cafemetrix.cafelab.profiles.domain.model.valueobjects.EmailAddress;
 import com.cafemetrix.cafelab.profiles.domain.services.ProfileCommandService;
 import com.cafemetrix.cafelab.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
@@ -42,5 +43,26 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         profileRepository.save(profile);
         eventPublisher.publishEvent(new ProfileCreatedEvent(command.email(), command.password()));
         return Optional.of(profile);
+    }
+
+    @Override
+    public Optional<Profile> handle(UpdateProfileCommand command) {
+        var profile = profileRepository.findById(command.profileId());
+        if (profile.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var updatedProfile = profile.get();
+        if (command.name() != null) updatedProfile.updateName(command.name());
+        if (command.email() != null) updatedProfile.updateEmailAddress(command.email());
+        if (command.cafeteriaName() != null) updatedProfile.updateCafeteriaName(command.cafeteriaName());
+        if (command.experience() != null) updatedProfile.updateExperience(command.experience());
+        if (command.paymentMethod() != null) updatedProfile.updatePaymentMethod(command.paymentMethod());
+        if (command.isFirstLogin() != null) updatedProfile.updateFirstLoginStatus(command.isFirstLogin());
+        if (command.plan() != null) updatedProfile.updatePlan(command.plan());
+        if (command.hasPlan() != null) updatedProfile.updateHasPlanStatus(command.hasPlan());
+
+        profileRepository.save(updatedProfile);
+        return Optional.of(updatedProfile);
     }
 }

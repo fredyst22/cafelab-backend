@@ -6,9 +6,11 @@ import com.cafemetrix.cafelab.profiles.domain.services.ProfileCommandService;
 import com.cafemetrix.cafelab.profiles.domain.services.ProfileQueryService;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.resources.CreateProfileResource;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.resources.ProfileResource;
+import com.cafemetrix.cafelab.profiles.interfaces.rest.resources.UpdateProfileResource;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.CreateProfileCommandFromResourceAssembler;
 import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.ProfileResourceFromEntityAssembler;
 
+import com.cafemetrix.cafelab.profiles.interfaces.rest.transform.UpdateProfileCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,6 +31,7 @@ import java.util.List;
 public class ProfilesController {
     private final ProfileCommandService profileCommandService;
     private final ProfileQueryService profileQueryService;
+
 
     /**
      * Constructor
@@ -94,6 +97,24 @@ public class ProfilesController {
                 .map(ProfileResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(profileResources);
+    }
+
+    @PatchMapping("/{profileId}")
+    @Operation(summary = "Update profile", description = "Update an existing profile.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile updated successfully."),
+            @ApiResponse(responseCode = "400", description = "Bad request."),
+            @ApiResponse(responseCode = "404", description = "Profile not found.")})
+    public ResponseEntity<ProfileResource> updateProfile(@PathVariable Long profileId, @RequestBody UpdateProfileResource resource) {
+        var updateProfileCommand = UpdateProfileCommandFromResourceAssembler.toCommandFromResource(profileId, resource);
+        var updatedProfile = profileCommandService.handle(updateProfileCommand);
+
+        if (updatedProfile.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(updatedProfile.get());
+        return ResponseEntity.ok(profileResource);
     }
 
 }
