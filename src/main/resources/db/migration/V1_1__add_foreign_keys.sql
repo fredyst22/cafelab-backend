@@ -10,3 +10,14 @@ ALTER TABLE profiles
     ADD CONSTRAINT FK_profiles_user_id
         FOREIGN KEY (user_id)
             REFERENCES users (id);
+
+
+ALTER TABLE recipes
+    ADD CONSTRAINT FK_recipe_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES profiles (id);
+
+ALTER TABLE ingredients
+    ADD CONSTRAINT FK_ingredients_recipe_id
+        FOREIGN KEY (recipe_id)
+            REFERENCES recipes (id);
